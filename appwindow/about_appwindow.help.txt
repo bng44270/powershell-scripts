@@ -1,0 +1,123 @@
+
+Create WinForms windows and dialog boxes
+
+Supported controls:
+
+   Button
+   Text Box
+   Label
+
+Supported dialog:
+
+   Message
+   Confirmation
+   Input
+
+Usage:
+
+   1. Loading Module (must be a the top of the script)
+
+       # Paths to .NET DLL's may vary
+       using assembly "C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Windows.Forms.dll"
+       using assembly "C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Drawing.dll" 
+       using assembly "C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.VisualBasic.dll"
+
+       using module \path\to\appwindow.psm1
+
+   2. Creating a window (WIDTH and HEIGHT are integers)
+
+       $winsize = [System.Drawing.Size]::new(WIDTH,HEIGHT)
+
+       $win = [AppWindow]::new($winSize)
+
+   3. Add a Label control to the window
+
+       $lblSize = [System.Drawing.Size]::new(WIDTH, HEIGHT)
+       $lblLocation = [System.Drawing.Point]::(X,Y)
+       $lblName = "lblField1"
+       $lblText = "Phone Number"
+       $win.AddLabel($lblName,$lblLocation,$lblSize,$lblText)
+
+   4. Add a Text Box control to the window
+
+       $txtSize = [System.Drawing.Size]::new(WIDTH, HEIGHT)
+       $txtLocation = [System.Drawing.Point]::(X,Y)
+       $txtName = "txtField1"
+       $win.AddTextBox($txtName,$txtLocation,$txtSize)
+
+   5. Add a Button control to the window
+
+       $btnSize = [System.Drawing.Size]::new(WIDTH, HEIGHT)
+       $btnLocation = [System.Drawing.Point]::(X,Y)
+       $btnName = "btnSubmit"
+       $btnText = "Go!"
+
+       $win.AddButton($btnName,$btnLocation,$btnSize,$btnText)
+
+   6. Show Window
+
+       $win.Open()
+
+   7. Adding an event handler involved running the Add_<EVENT> method on the desired object and supplying a code block as the argument.
+
+       # Adding form load event handler
+       $win.Add_Load({
+         # Do something when the form loads
+       })
+
+       # Adding a click event the button
+       $win.Elements['btnSubmit'].Add_Click({
+         # Do something when the button is cicked
+       })
+   
+   8. Define form layout in JSON
+       
+       {
+           "size": {                        <-- size of form window
+               "height": 220,
+               "width": 100
+           },
+           "elements": [                    <-- array containing form elements
+               {
+                   "type": "label | textbox | button",
+                   "name": "CONTROL-NAME",
+                   "text": "TEXT-ON-CONTROL",     <-- only for button or label
+                   "size": {                      <-- size of form elements
+                       "height": 40,
+                       "width": 100
+                   },
+                   "loc": {                       <-- position of form elements
+                       "x": 10,
+                       "y": 10
+                   }
+                },
+                ...
+           ]
+       }
+
+       
+       # And now load JSON
+
+       $win = [AppWindow]::FromJson("path\to\file.json")
+
+   9. Creating dialog boxes
+       
+       # Create an informational dialog boxes
+       [AppWindow]::ShowMessage("Message to display","Dialog title")
+
+       # Create an informational dialog with an icon
+       $icon = [System.Windows.Forms.MessageBoxIcon]::information
+       [AppWindow]::ShowMessage("Message to display","Dialog title",$icon)
+
+       # Create a confirmation dialog (response is boolean, OK = True and Cancel = False)
+       $result = [AppWindow]::ShowConfirm("Message to display","Dialog title")
+
+       # Create a confirmation dialog with icon
+       $icon = [System.Windows.Forms.MessageBoxIcon]::Question
+       $result = [AppWindow]::ShowConfirm("Message to display","Dialog title",$icon)
+
+       # Create an input-based dialog box (return value is a string)
+       $result = [AppWindow]::ShowInput("Message to display","Dialog title")
+
+       # Create an input-based dialog box with a default input value
+       $result = [AppWindow]::ShowInput("Message to display","Dialog title","default value")
