@@ -1,0 +1,59 @@
+
+Utility Classes
+
+Importing module (must be at the top of script)
+
+ using module \path\to\utility.psm1
+
+SecurePassword usage:
+
+  Setting with a clear-text in a variable
+
+       $p = [SecurePassword]::SetPasswordFromText($passvar)
+
+  Setting with a SecureString in a variable
+
+       $p = [SecurePassword]::SetPassword($secpass)
+
+  Generating a random password by supplying a length (if length is omitted, default length is 32)
+
+       $p = [SecurePassword]::NewRandomPassword($passlength)
+
+  Returning the SecureString value of the password
+
+       $p.Password
+
+  Returning a clear-text instance of the password
+
+       $p.Get()
+
+Range usage:
+
+  Create a range beginning at 0 and continuing for 20 numbers
+
+       $r = [Range]::new(20)
+
+  Create a range beginning at 1 and continuing for 20 numbers
+
+       $r = [Range]::new(1,20)
+
+  Create a range beginning at zero and continuing every 3 numbers for 11 numbers (0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30)
+
+       $r = [Range]::new(0,3,11)
+
+       # NOTE:  This returns all multiples of 3 where Index * 3 = Range Value
+
+
+SimpleMath usage:
+
+  Creating a list of numbers (used for Sum and Average methods):
+
+       $numlist = [System.Collections.ArrayList] @(1,2,3,4,5)
+
+  Calculating a sum:
+
+       $s = [SimpleMath]::Sum($numlist)
+
+  Calculating an average
+
+       $a = [SimpleMath]::Average($numlist)
