@@ -305,3 +305,24 @@ function Get-DiskUtilization($DriveLetter="C") {
 	}
 }
 
+function Get-ADUserAccountControl($Identity) {
+  $uac_str_ar = @()
+  
+  $uac = @("SCRIPT","ACCOUNTDISABLE","","HOMEDIR_REQUIRED","LOCKOUT","PASSWD_NOTREQD","PASSWD_CANT_CHANGE","ENCRYPTED_TEXT_PWD_ALLOWED","TEMP_DUPLICATE_ACCOUNT","NORMAL_ACCOUNT","","INTERDOMAIN_TRUST_ACCOUNT","WORKSTATION_TRUST_ACCOUNT","SERVER_TRUST_ACCOUNT","","","DONT_EXPIRE_PASSWORD","MNS_LOGON_ACCOUNT","SMARTCARD_REQUIRED","TRUSTED_FOR_DELEGATION","NOT_DELEGATED","USE_DES_KEY_ONLY","DONT_REQ_PREAUTH","PASSWORD_EXPIRED","TRUSTED_TO_AUTH_FOR_DELEGATION","","PARTIAL_SECRETS_ACCOUNT")
+  $uac_ar = ([convert]::ToString((Get-ADUser -Identity $Identity -Properties useraccountcontrol).useraccountcontrol,2).toCharArray())
+  [array]::Reverse($uac_ar)
+  
+  $returnValue = [pscustomobject]@{
+    "Identity" = $Identity
+    "Flags" = [System.Collections.ArrayList]::new()
+  }
+
+  for ($i = 0; $i -lt $uac_ar.length; $i++) {
+    if ($uac_ar[$i] -eq '1') {
+      $returnValue.Flags.Add($uac[$i])
+    }
+  }
+  
+  return $uac_str_ar
+}
+
